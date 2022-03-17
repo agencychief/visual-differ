@@ -56,15 +56,22 @@ const date = dayjs().format("YYYY_MM_DD__HH-mm-ss");
 
   // Add each page in our settings to a queue
   config.urls.forEach((data, i) => {
+  log(chalk.blue("\nGenerating images from your URLs..."));
+  urlA = (config.siteA+data.path);
+  urlB = (config.siteB+data.path);
+
+  log(chalk.blue("\n"+urlA));
+  log(chalk.blue("\n"+urlB));
+
     // Add the "A" test to our queue
     cluster.queue(
-      { url: data.a, css: data.css, test: "a", item: i + 1 },
+      { url: config.siteA, css: data.css, test: "a", item: i + 1 },
       screenshot
     );
 
     // Add the "B" test to our queue
     cluster.queue(
-      { url: data.b, css: data.css, test: "b", item: i + 1 },
+      { url: config.siteB, css: data.css, test: "b", item: i + 1 },
       screenshot
     );
   });
@@ -122,7 +129,7 @@ const date = dayjs().format("YYYY_MM_DD__HH-mm-ss");
     // Append data to a CSV file
     fs.appendFileSync(
       `screenshots/${date}/audit.csv`,
-      `${url.a},${url.b},${i + 1}/diff.png,${diffAmount},${
+      `${config.siteA+url.path},${config.siteB+url.path},${i + 1}/diff.png,${diffAmount},${
         diffAmount <= config.nonacceptableDiff ? "Pass" : "Fail"
       },""\n`
     );
